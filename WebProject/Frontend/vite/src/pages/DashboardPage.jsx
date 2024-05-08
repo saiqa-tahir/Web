@@ -1,126 +1,91 @@
-//Frontend/vite/src/pages/DashboardPage.jsx
-
-// import React, { useState } from 'react';
-// import axios from 'axios';
-
-// const DashboardPage = () => {
-//   const [communityName, setCommunityName] = useState('');
-//   const [showTextField, setShowTextField] = useState(false);
-
-//   const handleCreateCommunity = () => {
-//     setShowTextField(true);
-//   };
-
-//   const handleCommunityNameChange = (event) => {
-//     setCommunityName(event.target.value);
-//   };
-
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
-//     try {
-//       // Send a POST request to the backend to store the community name
-//       await axios.post('http://localhost:5000/api/community', { name: communityName });
-//       // Optionally, you can reset the communityName state or perform any other actions upon successful submission
-//       setCommunityName('');
-//       setShowTextField(false);
-//       // Add any other logic you want to execute after successful submission
-//     } catch (error) {
-//       console.error('Error creating community:', error);
-//     }
-//   };
-
-//   return (
-//     <div className="bg-white py-24 sm:py-32">
-//       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-//         <div className="mx-auto max-w-2xl lg:mx-0">
-//           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">From the blog</h2>
-//           <p className="mt-2 text-lg leading-8 text-gray-600">Learn how to grow your business with our expert advice.</p>
-//         </div>
-//         <button
-//           type="button"
-//           className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-//           onClick={handleCreateCommunity}
-//         >
-//           Create community
-//         </button>
-//         {showTextField && (
-//           <form onSubmit={handleSubmit} className="mt-4">
-//             <input
-//               type="text"
-//               value={communityName}
-//               onChange={handleCommunityNameChange}
-//               placeholder="Enter community name"
-//               className="w-full rounded-md border-gray-300 shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500 mt-2"
-//               required
-//             />
-//             <button
-//               type="submit"
-//               className="mt-2 bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700"
-//             >
-//               Create
-//             </button>
-//           </form>
-//         )}
-//         {/* Rest of your UI */}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default DashboardPage;
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const DashboardPage = () => {
-  const [communityNames, setCommunityNames] = useState([]);
+    const [blogs, setBlogs] = useState([]);
+    const [expandedBlogs, setExpandedBlogs] = useState([]);
 
-  useEffect(() => {
-    const fetchCommunityData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/community');
-        setCommunityNames(response.data);
-      } catch (error) {
-        console.error('Error fetching community data:', error);
-      }
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/getblog');
+                setBlogs(response.data);
+                // Initially, set all blogs to not expanded
+                setExpandedBlogs(Array(response.data.length).fill(false));
+            } catch (error) {
+                console.error('Error fetching blog data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const toggleDescription = (index) => {
+        const newExpandedBlogs = [...expandedBlogs];
+        newExpandedBlogs[index] = !newExpandedBlogs[index];
+        setExpandedBlogs(newExpandedBlogs);
     };
 
-    fetchCommunityData();
-  }, []); // Empty dependency array ensures the effect runs only once when the component mounts
-
-  const handleCreateCommunity = () => {
-    // Logic to handle creating a new community
-    console.log("Create community clicked");
-  };
-
-  return (
-    <div className="bg-white py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl lg:mx-0">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">From the blog</h2>
-          <p className="mt-2 text-lg leading-8 text-gray-600">Learn how to grow your business with our expert advice.</p>
+    return (
+        <>
+        <div className="bg-white py-24 sm:py-32">
+            <div className="mx-auto px-6 lg:px-8">
+                <div className="mx-auto  lg:mx-0">
+                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">From the blog</h2>
+                    <p className="mt-2 text-lg leading-8 text-gray-600">Learn how to grow your business with our expert advice.</p>
+                    <div className="mx-auto mt-3  border-t border-gray-200 sm:mt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                    <h2 className="text-3xl font-bold text-red-600 sm:text-4xl text-center mt-4 mb-3 ">Blogs</h2>
+                     </div>
+                </div>
+   
+                    {blogs.map((blog, index) => (
+       
+                        <div key={index} className="flex items-center justify-center bg-gray-200">
+                            <div className="bg-white p-8 w-[32rem] mr-4 ml-4 mt-3 mb-3">
+                                
+                                <header className="flex font-light text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 rotate-90 -ml-2" viewBox="0 0 24 24" stroke="#b91c1c">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                    </svg>
+                                    <h1 className="font-bold"> {blog.community} </h1>
+                                    
+                                </header>
+                                <div className=" m-0  shrink-0  rounded-xl rounded-r-none bg-white bg-clip-border text-gray-700">
+                <img
+                    src={blog.image}
+                    alt="image"
+                    className="h-full w-full object-cover"
+                />
+            </div>
+                                <h2 className="font-bold text-3xl mt-2">{blog.title}</h2>
+                                <p className="mt-5"> 
+                                    By: 
+                                    <a href="#" className="text-red-600"> Zohaib Safdar </a>, 
+                                    <a href="#" className="text-red-600"> Saiqa Tahir</a>
+                                </p>
+                                <h3 className="font-bold text-xl mt-8"> Description </h3>
+                                {expandedBlogs[index] ? (
+                                    <p className="font-light">{blog.description}</p>
+                                ) : (
+                                    <p className="font-light line-clamp-3">{blog.description}</p>
+                                )}
+                                <button className="bg-red-600 text-white font-semibold py-2 px-5 text-sm mt-6 inline-flex items-center group" onClick={() => toggleDescription(index)}>
+                                    <p> {expandedBlogs[index] ? 'Show Less' : 'Read More'} </p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-2 delay-100 duration-200 ease-in-out" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                   
+                    ))}
+                </div>
+          
         </div>
-        <button
-          type="button"
-          className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={handleCreateCommunity}
-        >
-          Create community
-        </button>
-        {communityNames.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold leading-6 text-gray-900">Community Names:</h3>
-            <ul className="mt-2">
-              {communityNames.map((name, index) => (
-                <li key={index} className="text-gray-600">{name}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {/* Rest of your UI */}
-      </div>
-    </div>
-  );
+        
+     
+    </>
+    );
 };
 
 export default DashboardPage;

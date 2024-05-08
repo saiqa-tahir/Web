@@ -5,7 +5,12 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 const communityRoutes = require('./routes/communityRoutes'); // Import communityRoutes
+const fastauthRoutes = require('./routes/fastauthRoutes');
+const requestRoute = require('./routes/requestRoute');
+const getRequestRoutes= require('./routes/getRequestRoutes');
+const getBlog=require('./routes/getBlog')
 require('dotenv').config();
 
 const app = express();
@@ -27,7 +32,12 @@ db.once('open', () => {
 });
 
 app.use('/api', authRoutes);
-app.use('/api/community', communityRoutes); // Mount communityRoutes
+app.use('/api', fastauthRoutes);
+app.use('/api/community', communityRoutes); 
+app.use('/api/blog', requestRoute);
+app.use('/api', blogRoutes);
+app.use('/api/getblog', getBlog);
+app.use('/api/request', getRequestRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -1,6 +1,5 @@
 // Backend/controllers/authController.js
 const User = require('../models/User');
-
 exports.signup = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -10,9 +9,6 @@ exports.signup = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
-
-
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -21,12 +17,10 @@ exports.login = async (req, res) => {
     if (!existingUser) {
       return res.json({ success: false, message: "User does not exist" });
     }
-
-    // Compare passwords (plaintext)
+  
     if (existingUser.password !== password) {
       return res.json({ success: false, message: "Incorrect password" });
     }
-
     // If email and password are correct, return success
     return res.json({ success: true, message: "Login successful", user: existingUser });
   } catch (err) {

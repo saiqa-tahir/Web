@@ -15,5 +15,15 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
+router.get('/', async (req, res) => {
+    try {
+      const communities = await Community.find({}, 'name');
+      // Extract only the name field from the communities
+      const communityNames = communities.map(community => community.name);
+      res.status(200).json(communityNames);
+    } catch (error) {
+      console.error('Error fetching community names:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 module.exports = router;
